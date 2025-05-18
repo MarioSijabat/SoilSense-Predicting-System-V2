@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SoilSense</title>
+    <link
+      rel="icon"
+      href="{{ url_for('static', filename='assets/icons/2719867.png') }}"
+      type="image/x-icon"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="bg-cover bg-center bg-[url('/static/assets/images/background.png')] bg-cover bg-top mx-[135px]"
+  >
+    <section
+      id="input"
+      class="flex items-center justify-center min-h-screen flex-col px-4 mb-10"
+    >
+      <div
+        class="bg-white/5 backdrop-blur-md border border-white/50 p-10 rounded-3xl shadow-xl w-full max-w-3xl"
+      >
+        <h1 class="text-white text-3xl font-bold text-center">
+          Input the Samples Data
+        </h1>
+        <p class="text-white text-center text-sm mt-2 mb-12">
+          *If your data is decimal, use a dot (.)
+        </p>
+        <form
+          id="cropForm"
+          class="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-8 text-white"
+        >
+          <div>
+            <label for="temperature" class="block mb-1 font-medium"
+              >Temperature</label
+            >
+            <input
+              name="temperature"
+              id="temperature"
+              type="text"
+              class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white focus:outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label for="humidity" class="block mb-1 font-medium"
+              >Humidity</label
+            >
+            <input
+              name="humidity"
+              id="humidity"
+              type="text"
+              class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white focus:outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label for="rainfall" class="block mb-1 font-medium"
+              >Rainfall</label
+            >
+            <input
+              name="rainfall"
+              id="rainfall"
+              type="text"
+              class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white focus:outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label for="N" class="block mb-1 font-medium">Nitrogen (N)</label>
+            <input
+              name="N"
+              id="N"
+              type="text"
+              class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white focus:outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label for="K" class="block mb-1 font-medium">Potassium (K)</label>
+            <input
+              name="K"
+              id="K"
+              type="text"
+              class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white focus:outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label for="P" class="block mb-1 font-medium"
+              >Phosphorous (P)</label
+            >
+            <input
+              name="P"
+              id="P"
+              type="text"
+              class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white focus:outline-none"
+              required
+            />
+          </div>
+          <div>
+            <label for="ph" class="block mb-1 font-medium">pH</label>
+            <input
+              name="ph"
+              id="ph"
+              type="text"
+              class="w-full px-4 py-2 rounded-lg bg-white/10 border border-white focus:outline-none"
+              required
+            />
+          </div>
+          <div class="md:col-span-2 flex justify-center mt-8">
+            <button
+              type="submit"
+              class="bg-lime-300 text-gray-900 font-semibold px-8 py-2 rounded-2xl hover:bg-lime-400 transition"
+            >
+              Get Prediction
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section id="result" class="w-full max-w-4xl mx-auto mt-20 mb-20">
+      <h2 class="text-white text-3xl font-bold mb-10 text-center">
+        Prediction Result
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div
+          class="flex items-center bg-white/5 backdrop-blur-md border border-white/50 p-6 rounded-xl text-white"
+        >
+          <div
+            class="w-20 h-20 mr-6 overflow-hidden flex items-center justify-center"
+          >
+            <img
+              src="{{ url_for('static', filename='assets/icons/crop.png') }}"
+              alt="Crop Icon"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <h3 class="text-md font-medium mb-1">Predicted Crop</h3>
+            <p class="text-2xl font-bold leading-relaxed" id="predictedLabel">-</p>
+          </div>
+        </div>
+        <div
+          class="flex items-center bg-white/5 backdrop-blur-md border border-white/50 p-6 rounded-xl text-white"
+        >
+          <div
+            class="w-20 h-20 mr-6 overflow-hidden flex items-center justify-center"
+          >
+            <img
+              src="{{ url_for('static', filename='assets/icons/fertilizer.png') }}"
+              alt="Crop Icon"
+              class="w-full h-full object-cover"
+            />
+          </div>
+          <div>
+            <h3 class="text-md font-medium mb-1">Fertility Score</h3>
+            <p class="text-2xl font-bold leading-relaxed" id="fertilityScore">-</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="text-center text-white py-6">
+      <p>
+        &copy; Kelompok 8 PM IF 2022<br />2025 SoilSense. All rights reserved.
+      </p>
+    </footer>
+
+    <script>
+      const form = document.getElementById("cropForm");
+      const predictedLabelElement = document.getElementById("predictedLabel");
+      const fertilityScoreElement = document.getElementById("fertilityScore");
+      const resultSection = document.getElementById("result");
+
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+
+        for (let key in data) {
+          data[key] = parseFloat(data[key]);
+        }
+
+        try {
+          const response = await fetch("/predict", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data),
+          });
+
+          const result = await response.json();
+
+          if (result.error) {
+            alert("Error: " + result.error);
+          } else {
+            predictedLabelElement.textContent = result.predicted_crop;
+            fertilityScoreElement.textContent = result.fertility_score;
+            resultSection.classList.remove("hidden");
+            resultSection.scrollIntoView({ behavior: "smooth" });
+          }
+        } catch (error) {
+          alert("Gagal mengirim data ke server.");
+        }
+      });
+    </script>
+  </body>
+</html>
